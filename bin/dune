@@ -1,0 +1,4 @@
+(executable
+ (public_name exercises_ocaml)
+ (name main)
+ (libraries exercises_ocaml))
