@@ -8,7 +8,7 @@ let rec flatten tree =
     | One x -> [x]
     | Many x -> flatten x
   in
-  List.flatten @@ List.map aux tree
+  List.map aux tree |> List.flatten
 
 let rec flatten' = 
   let aux = function
@@ -19,13 +19,22 @@ let rec flatten' =
   | [] -> []
   | x :: xs -> (aux x) @ (flatten' xs)
 
-let flatten_tcr tree = 
+let flatten'' tree = 
   let rec aux acc = function
       | [] -> acc
       | One y :: xs -> aux (y :: acc) xs
       | Many y :: xs -> aux (aux acc y) xs
   in
   aux [] tree |> List.rev
+
+let flatten_tcr tree = 
+  let rec aux acc stack list = match stack, list with
+      | [], [] -> acc
+      | x :: xs, [] -> aux acc xs x
+      | stack, One y :: xs -> aux (y :: acc) stack xs
+      | stack, Many y :: xs -> aux acc (xs :: stack) y 
+  in
+  aux [] [] tree |> List.rev
 
 (* Eliminate Duplicates *)
 let compress list = 
@@ -162,15 +171,23 @@ let rand_select list n =
   aux [] 0
 
 (* Generate the Combinations of K Distinct Objects Chosen From the N Elements of a List *)
-let extract list = 
-  let rec combine acc n = function
+let rec extract max list = 
+  let rec combine acc stack i list = match list with
+    | _ when i = 0 -> (List.rev stack) :: acc
     | [] -> acc
-    | h :: t -> combine ([n; h] :: acc) n t
+    | h :: t -> combine (combine acc (h :: stack) (i - 1) t) stack i t
   in
-  let rec aux acc = function
-    | [] | _ :: [] -> acc
-    | h :: t -> aux (combine acc h t) t
-  in
-  aux [] list |> List.rev
+  combine [] [] (max) list |> List.rev
 
-
+(* Group the Elements of a Set Into Disjoint Subsets *)
+(* let group l1 l2 = *)
+(*   let gen_indexes list = *)
+(*     let rec aux acc i = function *)
+(*       | [] -> acc *)
+(*       | _ :: xs -> aux (i :: acc) (i + 1) xs *)
+(*     in *)
+(*     aux [] 0 list *)
+(*   in *)
+(*   let indices = gen_indexes l1 *)
+(*   in *)
+(**)
