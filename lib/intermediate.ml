@@ -161,3 +161,16 @@ let rand_select list n =
   in
   aux [] 0
 
+(* Generate the Combinations of K Distinct Objects Chosen From the N Elements of a List *)
+let extract list = 
+  let rec combine acc n = function
+    | [] -> acc
+    | h :: t -> combine ([n; h] :: acc) n t
+  in
+  let rec aux acc = function
+    | [] | _ :: [] -> acc
+    | h :: t -> aux (combine acc h t) t
+  in
+  aux [] list |> List.rev
+
+
