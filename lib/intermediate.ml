@@ -179,15 +179,32 @@ let rec extract max list =
   in
   combine [] [] (max) list |> List.rev
 
+
+let enumerate list = 
+  let rec aux acc i = function
+    | [] -> acc
+    | h :: t -> aux ((i, h) :: acc) (i + 1) t
+  in
+  aux [] 0 list |> List.rev
+
 (* Group the Elements of a Set Into Disjoint Subsets *)
-(* let group l1 l2 = *)
-(*   let gen_indexes list = *)
-(*     let rec aux acc i = function *)
-(*       | [] -> acc *)
-(*       | _ :: xs -> aux (i :: acc) (i + 1) xs *)
+(* let group l1 l2 =  *)
+(*   let remove_at i list = *)
+(*     let rec aux acc = function *)
+(*       | (n, _) :: xs when i = n -> List.rev_append acc xs *)
+(*       | x :: xs -> aux (x :: acc) xs *)
+(*       | [] -> list *)
 (*     in *)
-(*     aux [] 0 list *)
+(*     aux [] list *)
 (*   in *)
-(*   let indices = gen_indexes l1 *)
+(*   let rec filter_l1 l1 = function *)
+(*     | [] -> [] *)
+(*     | h :: t -> filter_l1 (remove_at h l1) t *)
 (*   in *)
-(**)
+(*   let rec get_combs acc l1 l2 = match l2 with *)
+(*     | [] -> acc *)
+(*     | h :: t -> get_combs (get_combs (extract h l1) t l1) t l1 *)
+(*   in *)
+(*   get_combs [] (enumerate l1) l2 *)
+
+
